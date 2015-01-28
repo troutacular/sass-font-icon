@@ -69,3 +69,31 @@ _Note: The icon will be 1em of whatever you have the font set.  You can set the 
 Set the size of the icon if different than the font size.
 
 `[string]`: use a font size in any valid size attribute.  Default `false`
+
+## Performance
+
+Do not use the 'icon-font' mixin for each icon type/variable.  This will lead to repetitive code output and thus bloat.
+	
+Instead, use a 'default' variable set to '' and then use Sass Maps to loop through your font variables to specify the content of the individual class.
+
+	$icon-font-family: 'icon-font';
+	$icon-placement: before;
+	$icon-default: '';
+	$icon-padding: 1em;
+	$icon-alignment: inside;
+	
+	
+	*[class*='icon'],
+	*[class*='icon-only'] {
+		@include icon-font( $icon-default, $icon-font-family, $icon-placement, $icon-padding, $icon-alignment, #000, false, false );
+	}
+	
+	@each $icon-class, $icon-variable in 	(name-1, $icon-name-1),
+											(name-2, $icon-name-2) {
+		*[class*='icon-#{$icon-class}']
+		*[class*='icon-only-#{$icon-class}'] {
+			&:#{$icon-placement} {
+				content: $icon-variable;
+			}
+		}
+	}
